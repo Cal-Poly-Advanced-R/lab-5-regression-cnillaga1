@@ -24,7 +24,7 @@ predict_from_coefs <- function(dat, response, coefs){
   coefs1 <- coefs[,1]                             # grabs the intercept from coefs
   coefs2 <- data.matrix(coefs[,2:ncol(coefs)])    # grabs slope variables
 
-  p1 <- data %>%
+  p1 <- dat %>%
     select(-{{response}})                         # removing response variable from data frame
 
   x1 <- data.matrix(p1)                           # creating matrix of resulting data frame
@@ -32,7 +32,7 @@ predict_from_coefs <- function(dat, response, coefs){
   pred <- coefs2 %*% t(x1)                       # multiplying slope coefs by observed results
   preds2 <- t(pred) + coefs1                    # adding intercept to get predicted results
 
-  res <- cbind(y, pred2)                       # creating the final data with both true and predicted results
+  res <- cbind(y, preds2)                       # creating the final data with both true and predicted results
   results <- data.frame(res)
   colnames(results) <- c("True Results", "Predicted Results")
 
