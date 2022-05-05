@@ -88,7 +88,7 @@ find_best_lambda <- function(train_dat, test_dat, response, lambdas) {
 
     error_df <- cbind(preds2, y)                # binding predicted and observed values
 
-    new_error <- (error_df[,1:ncol(error_df)-1] - error_df[,ncol(error_df)])**2      # calculating sum of squares error
+    new_error <- (error_df[,ncol(error_df)] - error_df[,1:ncol(error_df)-1] )**2      # calculating sum of squares error
 
     new_error1 <- data.frame(t(new_error))                                          # transposing to get final calculation for sum of squares error
 
