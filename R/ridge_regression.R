@@ -69,11 +69,36 @@ ridge_regression <- function(dat, response, lambda) {
 #' @export
 find_best_lambda <- function(train_dat, test_dat, response, lambdas) {
 
+    y <- test_dat %>% select({{response}})                                   # pulling response variable
 
-  ### lambda_errors should be a data frame with two columns: "lambda" and "error"
-  ### For each lambda, you should record the resulting Sum of Squared error
-  ### (i.e., the predicted value minus the real value squared) from prediction
-  ### on the test dataset.dre
+    model <- ridge_regression(train_dat, {{response}}, lambdas)              # creating model from train_dat
 
-  return(lambda_errors)
+    new_model <- model[,1:ncol(model)-1]                                     # grabbing everything but the lambdas to test model
+
+    int_coeff <- new_model[,1]                   # grabbing intercept
+    beta_coeffs <- data.matrix(new_model[,2:ncol(new_model)])       # grabbing betas
+
+    observed_test <- test_dat %>%
+      select(-{{response}})                       # removing response variable from testing data frame
+
+    X1 <- data.matrix(scale(observed_test))      # making into matrix
+
+    pred <- beta_coeffs %*% t(X1)                # getting predicted values
+    preds2 <- t(pred) + int_coeff
+
+    error_df <- cbind(preds2, y)                # binding predicted and observed values
+
+    new_error <- (error_df[,1:ncol(error_df)-1] - error_df[,ncol(error_df)])**2      # calculating sum of squares error
+
+    new_error1 <- data.frame(t(new_error))                                          # transposing to get final calculation for sum of squares error
+
+    new_error1$sum <- rowSums(new_error1)                  # final calculation for sum of squares of error
+
+    final_df <- cbind(lambdas, new_error1$sum)             # creating final data frame
+    colnames(final_df) <- c("lambda", "error")
+
+    lambda_errors <- data.frame(final_df)
+
+    return(lambda_errors)
+
 }

@@ -27,7 +27,7 @@ predict_from_coefs <- function(dat, response, coefs){
   p1 <- dat %>%
     select(-{{response}})                         # removing response variable from data frame
 
-  x1 <- data.matrix(p1)                           # creating matrix of resulting data frame
+  x1 <- data.matrix(scale(p1))                           # creating matrix of resulting data frame
 
   pred <- coefs2 %*% t(x1)                       # multiplying slope coefs by observed results
   preds2 <- t(pred) + coefs1                    # adding intercept to get predicted results
